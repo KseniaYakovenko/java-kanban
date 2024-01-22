@@ -30,7 +30,7 @@ public class Task {
         this.status = status;
     }
 
-    public Epic getEpic(){
+    public Epic getEpic() {
         return null;
     }
 
@@ -83,5 +83,9 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    protected String getDescription() {
+        return description;
     }
 }
