@@ -24,6 +24,9 @@ public class Main {
         Task secondTask = taskManager.createTask(new Task("Вторая Новая задача"));
         System.out.println("Create task: " + secondTask);
 
+        Task thirdTask = taskManager.createTask(new Task("Третья Новая задача", "create with wrong status", TaskStatus.IN_PROGRESS));
+        System.out.println("Create task: " + thirdTask);
+
         Task secondTaskFromManager = taskManager.getTaskById(secondTask.getId());
 
         System.out.println("List of all tasks " + taskManager.getAllTask());
@@ -53,6 +56,9 @@ public class Main {
         firstSubTaskFromManager.setStatus(TaskStatus.DONE);
         System.out.println("Set status DONE for first subTask");
         System.out.println("Get firstSubTask: " + firstSubTaskFromManager);
+        firstSubTaskFromManager.setDescription("updated from updateSubTusk");
+        taskManager.updateSubTask(firstSubTaskFromManager);
+        System.out.println("Get firstSubTask after updating: " + firstSubTaskFromManager);
 
         SubTask secondSubTask = taskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
         System.out.println("\nCreate subtask: " + secondSubTask);
@@ -75,11 +81,15 @@ public class Main {
         System.out.println(taskManager.getAllSubTask());
         System.out.println(taskManager.getAllEpic());
 
-        taskManager.deleteSubTask(5);
+        taskManager.deleteSubTask(secondSubTask.getId());
 
-        Epic epicById = taskManager.getEpicById(3);
+        Epic epicById = taskManager.getEpicById(epicFromManager.getId());
         epicById.setDescription("No subtasks");
         taskManager.updateEpic(epicById);
+
+        Epic newEpic = new Epic("epicName", "epicDesc_without_subTasks");
+        taskManager.createEpic(newEpic);
+
         System.out.println(taskManager.getAllEpic());
 
 

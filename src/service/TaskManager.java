@@ -10,14 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TaskManager {
-
     HashMap<Integer, Task> tasks;
     HashMap<Integer, Epic> epics;
     HashMap<Integer, SubTask> subTasks;
     int seq = 0;
 
     public TaskManager() {
-
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
@@ -88,14 +86,15 @@ public class TaskManager {
     }
 
     public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
+        int epicId = epic.getId();
+        Epic savedEpic = epics.get(epicId);
+        epic.setSubtasks(savedEpic.getSubTask());
         epic.calculateStatus();
+        epics.put(epicId, epic);
     }
 
     public void updateSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
         subTask.getEpic().calculateStatus();
     }
-
-
 }

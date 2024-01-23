@@ -10,7 +10,8 @@ public class Task {
     private String description;
     private TaskStatus status;
 
-    public Task() {
+    public Task(String name) {
+        this.name = name;
     }
 
     public Task(String name, String description, TaskStatus status) {
@@ -19,15 +20,9 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String name) {
-        this.name = name;
-    }
-
-    public Task(int id, String name, String description, TaskStatus status) {
-        this.id = id;
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = status;
     }
 
     public Epic getEpic() {

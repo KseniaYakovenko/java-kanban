@@ -7,8 +7,8 @@ public class Epic extends Task {
 
     List<SubTask> subTasks = new ArrayList<>();
 
-    public Epic(String name, String description, TaskStatus status) {
-        super(name, description, status);
+    public Epic(String name, String description) {
+        super(name, description);
     }
 
     public Epic(String name) {
@@ -72,4 +72,7 @@ public class Epic extends Task {
                 '}';
     }
 
+    public void setSubtasks(List<SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
 }
