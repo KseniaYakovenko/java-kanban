@@ -5,10 +5,11 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    List<SubTask> subTasks = new ArrayList<>();
+    private List<SubTask> subTasks = new ArrayList<>();
 
     public Epic(String name, String description) {
         super(name, description);
+        super.setStatus(TaskStatus.NEW);
     }
 
     public Epic(String name) {
@@ -17,7 +18,7 @@ public class Epic extends Task {
     }
 
     public List<SubTask> getSubTask() {
-        return subTasks;
+        return new ArrayList<>(subTasks);
     }
 
     public void addSubTask(SubTask subTask) {
@@ -31,34 +32,36 @@ public class Epic extends Task {
     }
 
     public void calculateStatus() {
-        if (subTasks.isEmpty() || allSubTaskIsNew()) {
+        if (subTasks.isEmpty()) {
             super.setStatus(TaskStatus.NEW);
-        } else if (allSubTaskIsDone()) {
-            super.setStatus(TaskStatus.DONE);
-        } else super.setStatus(TaskStatus.IN_PROGRESS);
-    }
+            return;
+        }
+        boolean allSubTaskStatusesIsNEW = true;
+        boolean allSubTaskStatusesIsDONE = true;
 
-    private boolean allSubTaskIsDone() {
         for (SubTask subTask : subTasks) {
-            if (subTask.getStatus() != TaskStatus.DONE) {
-                return false;
+            if (subTask.getStatus() != TaskStatus.NEW) {
+                allSubTaskStatusesIsNEW = false;
+            } else if (subTask.getStatus() != TaskStatus.DONE) {
+                allSubTaskStatusesIsDONE = false;
+            }
+
+            if (!(allSubTaskStatusesIsNEW || allSubTaskStatusesIsDONE)){
+                super.setStatus(TaskStatus.IN_PROGRESS);
+                return;
             }
         }
-        return true;
+
+        if (allSubTaskStatusesIsNEW) {
+            super.setStatus(TaskStatus.NEW);
+        } else if (allSubTaskStatusesIsDONE) {
+            super.setStatus(TaskStatus.DONE);
+        }
     }
 
     @Override
     public void setStatus(TaskStatus status) {
         calculateStatus();
-    }
-
-    private boolean allSubTaskIsNew() {
-        for (SubTask subTask : subTasks) {
-            if (subTask.getStatus() != TaskStatus.NEW) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

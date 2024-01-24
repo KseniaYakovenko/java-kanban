@@ -10,16 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TaskManager {
-    HashMap<Integer, Task> tasks;
-    HashMap<Integer, Epic> epics;
-    HashMap<Integer, SubTask> subTasks;
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     int seq = 0;
-
-    public TaskManager() {
-        this.tasks = new HashMap<>();
-        this.epics = new HashMap<>();
-        this.subTasks = new HashMap<>();
-    }
 
     private int generateId() {
         return ++seq;
@@ -78,11 +72,49 @@ public class TaskManager {
         tasks.remove(id);
     }
 
+    public void deleteAllTask() {
+        tasks.clear();
+    }
+
+    public void deleteEpic(int id) {
+        Epic removeEpic = epics.get(id);
+        if (removeEpic != null) {
+            deleteAllSubTasksFromEpic(removeEpic);
+            epics.remove(id);
+        } else {
+            System.out.println("Incorrect id = " + id + " for deleting");
+        }
+    }
+
+    private void deleteAllSubTasksFromEpic(Epic removeEpic) {
+        List<SubTask> subTaskListForRemoving = removeEpic.getSubTask();
+        for (SubTask subTask : subTaskListForRemoving) {
+            deleteSubTask(subTask.getId());
+        }
+    }
+
+    public void deleteAllEPic() {
+        for (Epic epic : epics.values()) {
+            deleteAllSubTasksFromEpic(epic);
+        }
+        epics.clear();
+    }
+
     public void deleteSubTask(int id) {
-        SubTask removeSubTask = subTasks.remove(id);
-        Epic epic = removeSubTask.getEpic();
-        Epic epicSaved = epics.get(epic.getId());
-        epicSaved.removeSubTask(removeSubTask);
+        SubTask removeSubTask = subTasks.get(id);
+        deleteSubTaskFromEpic(removeSubTask);
+        subTasks.remove(id);
+    }
+
+    public void deleteSubTaskFromEpic(SubTask subTask) {
+        subTask.getEpic().removeSubTask(subTask);
+    }
+
+    public void deleteAllSubTask() {
+        for (SubTask subTask : subTasks.values()) {
+            deleteSubTaskFromEpic(subTask);
+        }
+        subTasks.clear();
     }
 
     public void updateEpic(Epic epic) {

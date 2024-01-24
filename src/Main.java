@@ -66,7 +66,8 @@ public class Main {
 
         System.out.println("\nGet epic after creating two subtask: " + epicFromManager);
 
-        epicFromManager.removeSubTask(firstSubTask);
+        ///taskManager.deleteSubTask(firstSubTask.getId());
+
         System.out.println("Get epic after removing first subtask: " + epicFromManager);
 
         System.out.println("Set status DONE for secondSubTask");
@@ -75,13 +76,9 @@ public class Main {
         epicFromManager.setDescription("alone subtask with status DONE");
         System.out.println("Get epic after changing status second subtask: " + epicFromManager);
 
-        System.out.println("Get epic after removing: " + epicFromManager);
-
-        System.out.println(taskManager.getAllTask());
-        System.out.println(taskManager.getAllSubTask());
         System.out.println(taskManager.getAllEpic());
 
-        taskManager.deleteSubTask(secondSubTask.getId());
+        //taskManager.deleteSubTask(secondSubTask.getId());
 
         Epic epicById = taskManager.getEpicById(epicFromManager.getId());
         epicById.setDescription("No subtasks");
@@ -90,7 +87,20 @@ public class Main {
         Epic newEpic = new Epic("epicName", "epicDesc_without_subTasks");
         taskManager.createEpic(newEpic);
 
-        System.out.println(taskManager.getAllEpic());
+        System.out.println("All tasks: " + taskManager.getAllTask());
+        System.out.println("All subTasks: " + taskManager.getAllSubTask());
+        System.out.println("All epics: " + taskManager.getAllEpic());
+
+        taskManager.deleteAllEPic();
+        taskManager.deleteEpic(4);
+        taskManager.deleteEpic(7);
+
+        taskManager.deleteAllSubTask();
+        taskManager.deleteAllTask();
+
+        System.out.println("\nAll tasks after removing all: " + taskManager.getAllTask());
+        System.out.println("All subTasks after removing all: " + taskManager.getAllSubTask());
+        System.out.println("All epics after removing all: " + taskManager.getAllEpic());
 
 
     }

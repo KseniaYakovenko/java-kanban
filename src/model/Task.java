@@ -25,10 +25,6 @@ public class Task {
         this.description = description;
     }
 
-    public Epic getEpic() {
-        return null;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -80,7 +76,7 @@ public class Task {
         return Objects.hash(id);
     }
 
-    protected String getDescription() {
+    public String getDescription() {
         return description;
     }
 }
