@@ -2,14 +2,10 @@ package model;
 
 public class SubTask extends Task {
 
-    private Epic epic;
+    private final Epic epic;
 
     public SubTask(String name, Epic epic) {
         super(name);
-        this.epic = epic;
-    }
-
-    public void setEpic(Epic epic) {
         this.epic = epic;
     }
 

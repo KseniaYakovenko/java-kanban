@@ -53,6 +53,10 @@ public class Task {
         return status;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -74,9 +78,5 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

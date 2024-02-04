@@ -2,106 +2,146 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskStatus;
+import service.Managers;
 import service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefaultsTaskManager();
+        printAllTasks(inMemoryTaskManager);
 
-        Task task = taskManager.createTask(new Task("Новая задача"));
-        System.out.println("Create task: " + task);
+        int firstTaskId = inMemoryTaskManager.createTask(new Task("Новая задача"));
+        Task firstTask = inMemoryTaskManager.getTaskById(firstTaskId);
+        System.out.println("Create task: " + firstTask);
+        firstTask.setDescription("UPDATED MANUAL TASK");
+        inMemoryTaskManager.updateTask(firstTask);
+        System.out.println("TASK AFTER MANUAL UPDATE " + firstTask);
 
-        Task firstTaskFromManager = taskManager.getTaskById(task.getId());
-        System.out.println("Get task:    " + firstTaskFromManager);
+        Task firstTaskFromManager = inMemoryTaskManager.getTaskById(firstTask.getId());
+        System.out.println("Get task by ID: " + firstTaskFromManager);
 
-        firstTaskFromManager.setName("New name");
-        firstTaskFromManager.setStatus(TaskStatus.IN_PROGRESS);
-        firstTaskFromManager.setDescription("Changed name and status for task");
-        taskManager.updateTask(firstTaskFromManager);
-        System.out.println("Update task: " + firstTaskFromManager);
+        printHistory(inMemoryTaskManager);
 
-        Task secondTask = taskManager.createTask(new Task("Вторая Новая задача"));
+        int secondTaskId = inMemoryTaskManager.createTask(new Task("Вторая Новая задача"));
+        Task secondTask = inMemoryTaskManager.getTaskById(secondTaskId);
+        secondTask.setName("Вторая Новая задача after set name");
         System.out.println("Create task: " + secondTask);
 
-        Task thirdTask = taskManager.createTask(new Task("Третья Новая задача", "create with wrong status", TaskStatus.IN_PROGRESS));
+        int thirdTaskId = inMemoryTaskManager.createTask(new Task("Третья Новая задача", "create with wrong status", TaskStatus.IN_PROGRESS));
+        Task thirdTask = inMemoryTaskManager.getTaskById(thirdTaskId);
         System.out.println("Create task: " + thirdTask);
 
-        Task secondTaskFromManager = taskManager.getTaskById(secondTask.getId());
+        Task secondTaskFromManager = inMemoryTaskManager.getTaskById(secondTask.getId());
+        System.out.println("Task by ID: " + secondTaskFromManager);
 
-        System.out.println("List of all tasks " + taskManager.getAllTask());
+        System.out.println("List of all tasks " + inMemoryTaskManager.getAllTask());
 
-
-        taskManager.deleteTask(firstTaskFromManager.getId());
-        System.out.println("Delete: " + task);
-
-        System.out.println("List of all tasks after first task delete" + taskManager.getAllTask());
+        printAllTasks(inMemoryTaskManager);
 
 
-        taskManager.deleteTask(secondTaskFromManager.getId());
+        inMemoryTaskManager.deleteTask(firstTaskFromManager.getId());
+        System.out.println("Delete by ID: " + firstTask);
+
+        System.out.println("List of all tasks after first task delete" + inMemoryTaskManager.getAllTask());
+
+
+        inMemoryTaskManager.deleteTask(secondTaskFromManager.getId());
         System.out.println("Delete: " + secondTask);
 
-        System.out.println("List of all tasks after first and second task delete" + taskManager.getAllTask());
+        System.out.println("List of all tasks after first and second task delete" + inMemoryTaskManager.getAllTask());
 
-        Epic epic = taskManager.createEpic(new Epic("Новый эпик"));
+        int epicId = inMemoryTaskManager.createEpic(new Epic("Новый эпик"));
+        Epic epic = inMemoryTaskManager.getEpicById(epicId);
         System.out.println("\nCreate epic: " + epic);
 
-        Epic epicFromManager = taskManager.getEpicById(epic.getId());
-        System.out.println("Get epic: " + epicFromManager);
+        Epic epicFromManager = inMemoryTaskManager.getEpicById(epic.getId());
 
-        SubTask firstSubTask = taskManager.createSubTask(new SubTask("Новая подзадача 1", epic));
+        System.out.println("Getting epic BY ID 10 times ");
+        getEpicDyIdSomeTimes(inMemoryTaskManager, epic, 10);
+
+        printHistory(inMemoryTaskManager);
+
+        int firstSubTaskId = inMemoryTaskManager.createSubTask(new SubTask("Новая подзадача 1", epic));
+        SubTask firstSubTask = inMemoryTaskManager.getSubTaskById(firstSubTaskId);
         System.out.println("\nCreate subtask: " + firstSubTask);
 
-        SubTask firstSubTaskFromManager = taskManager.getSubTaskById(firstSubTask.getId());
+        SubTask firstSubTaskFromManager = inMemoryTaskManager.getSubTaskById(firstSubTask.getId());
         firstSubTaskFromManager.setStatus(TaskStatus.DONE);
         System.out.println("Set status DONE for first subTask");
         System.out.println("Get firstSubTask: " + firstSubTaskFromManager);
         firstSubTaskFromManager.setDescription("updated from updateSubTusk");
-        taskManager.updateSubTask(firstSubTaskFromManager);
+        inMemoryTaskManager.updateSubTask(firstSubTaskFromManager);
         System.out.println("Get firstSubTask after updating: " + firstSubTaskFromManager);
 
-        SubTask secondSubTask = taskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
+        int secondSubTaskId = inMemoryTaskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
+        SubTask secondSubTask = inMemoryTaskManager.getSubTaskById(secondSubTaskId);
         System.out.println("\nCreate subtask: " + secondSubTask);
-        System.out.println("All subTasks: " + taskManager.getAllSubTask());
+        System.out.println("All subTasks: " + inMemoryTaskManager.getAllSubTask());
 
-        System.out.println("\nGet epic after creating two subtask: " + epicFromManager);
 
-        ///taskManager.deleteSubTask(firstSubTask.getId());
-
-        System.out.println("Get epic after removing first subtask: " + epicFromManager);
-
-        System.out.println("Set status DONE for secondSubTask");
-        secondSubTask.setStatus(TaskStatus.DONE);
-        System.out.println(secondSubTask);
-        epicFromManager.setDescription("alone subtask with status DONE");
-        System.out.println("Get epic after changing status second subtask: " + epicFromManager);
-
-        System.out.println(taskManager.getAllEpic());
-
-        //taskManager.deleteSubTask(secondSubTask.getId());
-
-        Epic epicById = taskManager.getEpicById(epicFromManager.getId());
+        Epic epicById = inMemoryTaskManager.getEpicById(epicFromManager.getId());
         epicById.setDescription("No subtasks");
-        taskManager.updateEpic(epicById);
+        inMemoryTaskManager.updateEpic(epicById);
 
         Epic newEpic = new Epic("epicName", "epicDesc_without_subTasks");
-        taskManager.createEpic(newEpic);
+        inMemoryTaskManager.createEpic(newEpic);
 
-        System.out.println("All tasks: " + taskManager.getAllTask());
-        System.out.println("All subTasks: " + taskManager.getAllSubTask());
-        System.out.println("All epics: " + taskManager.getAllEpic());
+        System.out.println("All tasks: " + inMemoryTaskManager.getAllTask());
+        System.out.println("All subTasks: " + inMemoryTaskManager.getAllSubTask());
+        System.out.println("All epics: " + inMemoryTaskManager.getAllEpic());
 
-        taskManager.deleteAllEPic();
-        taskManager.deleteEpic(4);
-        taskManager.deleteEpic(7);
+        System.out.println("===================");
+        printAllTasks(inMemoryTaskManager);
+        System.out.println("===================");
 
-        taskManager.deleteAllSubTask();
-        taskManager.deleteAllTask();
+        inMemoryTaskManager.deleteAllEPic();
+        inMemoryTaskManager.deleteEpic(4);
+        inMemoryTaskManager.deleteEpic(7);
+        inMemoryTaskManager.deleteAllSubTask();
+        inMemoryTaskManager.deleteAllTask();
+        System.out.println("\nAll tasks after removing all: " + inMemoryTaskManager.getAllTask());
+        System.out.println("All subTasks after removing all: " + inMemoryTaskManager.getAllSubTask());
+        System.out.println("All epics after removing all: " + inMemoryTaskManager.getAllEpic());
 
-        System.out.println("\nAll tasks after removing all: " + taskManager.getAllTask());
-        System.out.println("All subTasks after removing all: " + taskManager.getAllSubTask());
-        System.out.println("All epics after removing all: " + taskManager.getAllEpic());
 
+        printAllTasks(inMemoryTaskManager);
 
+    }
+
+    private static void getEpicDyIdSomeTimes(TaskManager inMemoryTaskManager, Epic epic, int times) {
+        for (int i = 0; i < times; i++) {
+            System.out.println("Get epic: " + inMemoryTaskManager.getEpicById(epic.getId()));
+        }
+    }
+
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("\nЗадачи:");
+        for (Task task : manager.getAllTask()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getAllEpic()) {
+            System.out.println(epic);
+
+            for (Task task : manager.getEpicSubtasks(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getAllSubTask()) {
+            System.out.println(subtask);
+        }
+
+        printHistory(manager);
+    }
+
+    private static void printHistory(TaskManager manager) {
+        System.out.println("История:");
+
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+        System.out.println("\n");
     }
 }

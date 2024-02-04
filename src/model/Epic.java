@@ -46,7 +46,7 @@ public class Epic extends Task {
                 allSubTaskStatusesIsDONE = false;
             }
 
-            if (!(allSubTaskStatusesIsNEW || allSubTaskStatusesIsDONE)){
+            if (!(allSubTaskStatusesIsNEW || allSubTaskStatusesIsDONE)) {
                 super.setStatus(TaskStatus.IN_PROGRESS);
                 return;
             }
