@@ -34,12 +34,7 @@ public interface TaskManager
 
     void deleteEpic(int id);
 
-    default void deleteAllSubTasksFromEpic(Epic removeEpic) {
-        List<SubTask> subTaskListForRemoving = removeEpic.getSubTask();
-        for (Task subTask : subTaskListForRemoving) {
-            deleteSubTask(subTask.getId());
-        }
-    }
+    void deleteAllSubTasksFromEpic(Epic removeEpic);
 
     void deleteAllEPic();
 

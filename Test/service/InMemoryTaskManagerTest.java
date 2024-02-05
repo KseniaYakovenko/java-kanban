@@ -16,17 +16,9 @@ class InMemoryTaskManagerTest {
 
     @BeforeEach
     void clear(){
-        inMemoryTaskManager.tasks.clear();
-        inMemoryTaskManager.subTasks.clear();
-        inMemoryTaskManager.epics.clear();
-    }
-
-    @Test
-    void generateId() {
-        int expected = inMemoryTaskManager.generateId();
-        int actual = inMemoryTaskManager.seq;
-        assertEquals(expected, actual, "Sequence не совпадает");
-
+        inMemoryTaskManager.deleteAllTask();
+        inMemoryTaskManager.deleteAllSubTask();
+        inMemoryTaskManager.deleteAllEPic();
     }
 
     @Test
