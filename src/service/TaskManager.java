@@ -6,8 +6,7 @@ import model.Task;
 
 import java.util.List;
 
-public interface TaskManager
- {
+public interface TaskManager {
     int createTask(Task task);
 
     int createSubTask(SubTask subTask);
