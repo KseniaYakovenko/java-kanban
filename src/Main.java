@@ -107,6 +107,18 @@ public class Main {
 
         printAllTasks(inMemoryTaskManager);
 
+        int firstTaskId1 = inMemoryTaskManager.createTask(new Task("Новая задача"));
+        Task firstTask1 = inMemoryTaskManager.getTaskById(firstTaskId1);
+        System.out.println("Create task: " + firstTask1);
+        firstTask.setDescription("UPDATED MANUAL TASK");
+        inMemoryTaskManager.updateTask(firstTask1);
+        System.out.println("TASK AFTER MANUAL UPDATE " + firstTask);
+
+        Task firstTaskFromManager1 = inMemoryTaskManager.getTaskById(firstTask1.getId());
+        System.out.println("Get task by ID: " + firstTaskFromManager1);
+
+        printHistory(inMemoryTaskManager);
+
     }
 
     private static void getEpicDyIdSomeTimes(TaskManager inMemoryTaskManager, Epic epic, int times) {

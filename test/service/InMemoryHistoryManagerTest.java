@@ -25,11 +25,9 @@ class InMemoryHistoryManagerTest {
     @Test
     void getHistory() {
         Task task1 = new Task("Task1", "description1", TaskStatus.NEW);
-        final List<Task> historyBefore = historyManager.getHistory();
-        final List<Task> historyExpected = new ArrayList<>(historyBefore);
-        historyExpected.add(task1);
+        final List<Task> historyExpected = new ArrayList<>(List.of(task1));
         historyManager.add(task1);
-        final List<Task> historyAfter = historyManager.getHistory();
-        assertEquals(historyExpected, historyAfter, "История не совпадает.");
+        final List<Task> historyActual = historyManager.getHistory();
+        assertEquals(historyExpected, historyActual, "История не совпадает.");
     }
 }
