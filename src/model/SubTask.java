@@ -25,7 +25,7 @@ public class SubTask extends Task {
     }
 
     @Override
-    public TaskType getType (){
+    public TaskType getType() {
         return TaskType.SUBTASK;
     }
 
@@ -43,7 +43,7 @@ public class SubTask extends Task {
     @Override
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
-                +  this.getDescription()+ "," + this.epic.getId();
+                + this.getDescription() + "," + this.epic.getId();
     }
 
     public void setEpic(Epic epic) {
