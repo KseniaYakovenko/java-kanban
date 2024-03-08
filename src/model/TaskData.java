@@ -25,7 +25,6 @@ public class TaskData {
         return seq;
     }
 
-
     public List<Task> getTasks() {
         return tasks;
     }

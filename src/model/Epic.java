@@ -75,7 +75,7 @@ public class Epic extends Task {
     }
 
     @Override
-    public TaskType getType (){
+    public TaskType getType() {
         return TaskType.EPIC;
     }
 
@@ -97,6 +97,6 @@ public class Epic extends Task {
     @Override
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
-                +  this.getDescription()+ "," + null;
+                + this.getDescription() + "," + null;
     }
 }
