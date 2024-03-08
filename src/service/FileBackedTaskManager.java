@@ -1,6 +1,9 @@
 package service;
 
-import model.*;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import model.TaskData;
 import repository.CsvTaskRepository;
 import repository.TaskRepository;
 
@@ -27,13 +30,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void init() {
         TaskData taskData = repository.load();
-        for (Task task : taskData.getTasks()){
+        for (Task task : taskData.getTasks()) {
             tasks.put(task.getId(), task);
         }
-        for (SubTask subTask : taskData.getSubTasks()){
+        for (SubTask subTask : taskData.getSubTasks()) {
             subTasks.put(subTask.getId(), subTask);
         }
-        for (Epic epic : taskData.getEpics()){
+        for (Epic epic : taskData.getEpics()) {
             epics.put(epic.getId(), epic);
         }
 
