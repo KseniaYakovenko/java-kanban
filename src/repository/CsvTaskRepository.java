@@ -1,19 +1,22 @@
 package repository;
 
-import model.*;
 import exception.ManagerSaveException;
+import model.*;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
 public class CsvTaskRepository implements TaskRepository {
-    private static final String TASK_CSV = "task.csv";
-    private static final String HISTORY_CSV = "history.csv";
     private static final String HEADER_CSV = "id,type,name,status,description,epic";
-    private final File tasksFile = new File(TASK_CSV);
-    private final File historyFile = new File(HISTORY_CSV);
+    private final FileNameProvider provider;
+
+    public CsvTaskRepository(FileNameProvider provider) {
+        this.provider = provider;
+    }
 
     @Override
     public TaskData load() {
@@ -26,7 +29,7 @@ public class CsvTaskRepository implements TaskRepository {
         HashMap<Integer, Epic> epicsMap = new HashMap<>();
         HashMap<Integer, Task> fullMap = new HashMap<>();
 
-        try (final BufferedReader reader = new BufferedReader(new FileReader(tasksFile))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(provider.getTaskFileName()))) {
             reader.readLine();
             int maxId = 0;
             while (reader.ready()) {
@@ -39,25 +42,28 @@ public class CsvTaskRepository implements TaskRepository {
             System.out.println("MAX ID" + maxId);
             taskData.setSeq(maxId);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка в файле: " + tasksFile.getAbsolutePath(), e);
+            throw new RuntimeException("Ошибка в файле: " + new File(provider.getTaskFileName()).getAbsolutePath(), e);
         }
 
-        try (final BufferedReader reader = new BufferedReader(new FileReader(historyFile))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(provider.getHistoryFileName()))) {
             String historyLine = reader.readLine();
-            System.out.println(historyLine);
-            System.out.println(historyLine);
             if (historyLine != null) {
                 final String[] columns = historyLine.split(",");
                 for (String column : columns) {
                     if (!column.isEmpty()) {
                         int id = parseInt(column);
-                        taskData.getHistory().add(fullMap.get(id));
+                        Task task = fullMap.get(id);
+                        if (task == null) {
+                            throw new ManagerSaveException("Ошибка загрузки истории для идентификатора id = " + id);
+                        }
+                        taskData.getHistory().add(task);
                     }
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка в файле: " + historyFile.getAbsolutePath(), e);
+            throw new ManagerSaveException("Ошибка в файле: " + new File(provider.getHistoryFileName()).getAbsolutePath(), e);
         }
+
         restoreEpicSubTaskLink(taskData, epicSubTasksMap, epicsMap);
         return taskData;
     }
@@ -81,7 +87,7 @@ public class CsvTaskRepository implements TaskRepository {
     }
 
     private void saveHistory(TaskData taskData) throws ManagerSaveException {
-        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(historyFile))) {
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(provider.getHistoryFileName()))) {
             StringBuilder sb = new StringBuilder();
             for (Task task : taskData.getHistory()) {
                 sb.append(task.getId().toString());
@@ -95,13 +101,13 @@ public class CsvTaskRepository implements TaskRepository {
             writer.newLine();
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка в файле: " + historyFile.getAbsolutePath(), e);
+            throw new ManagerSaveException("Ошибка в файле: " + new File(provider.getHistoryFileName()).getAbsolutePath(), e);
         }
     }
 
 
     private void saveTasks(TaskData taskData) {
-        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(tasksFile))) {
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(provider.getTaskFileName()))) {
             writer.append(HEADER_CSV);
             writer.newLine();
             for (Task task : taskData.getTasks()) {
@@ -119,7 +125,7 @@ public class CsvTaskRepository implements TaskRepository {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка в файле: " + tasksFile.getAbsolutePath(), e);
+            throw new RuntimeException("Ошибка в файле: " + new File(provider.getTaskFileName()).getAbsolutePath(), e);
         }
     }
 
@@ -132,36 +138,30 @@ public class CsvTaskRepository implements TaskRepository {
         TaskStatus status = TaskStatus.valueOf(columns[3]);
         String description = columns[4];
 
-        Task task;
         switch (type) {
             case TASK:
-                task = new Task(id, name, description, status);
+                Task task = new Task(id, name, description, status);
                 taskData.getTasks().add(task);
                 fullMap.put(id, task);
                 break;
 
             case SUBTASK:
-                task = new SubTask(id, name, description, status);
+                SubTask subTask = new SubTask(id, name, description, status);
                 Integer epicId = parseInt(columns[5]);
-                ((SubTask) task).setEpic(new Epic(epicId));
-                taskData.getSubTasks().add((SubTask) task);
-                ArrayList<SubTask> subTasks;
-
-                if (epicSubTasksMap.get(epicId) == null) {
-                    subTasks = new ArrayList<>();
-                } else {
-                    subTasks = epicSubTasksMap.get(epicId);
-                }
-                subTasks.add((SubTask) task);
+                subTask.setEpic(new Epic(epicId));
+                taskData.getSubTasks().add(subTask);
+                ArrayList<SubTask> subTasks = epicSubTasksMap.get(epicId) == null ?
+                        new ArrayList<>() : epicSubTasksMap.get(epicId);
+                subTasks.add(subTask);
                 epicSubTasksMap.put(epicId, subTasks);
-                fullMap.put(id, task);
+                fullMap.put(id, subTask);
                 break;
 
             case EPIC:
-                task = new Epic(id, name, description, status);
-                taskData.getEpics().add((Epic) task);
-                epicsMap.put(id, (Epic) task);
-                fullMap.put(id, task);
+                Epic epic = new Epic(id, name, description, status);
+                taskData.getEpics().add(epic);
+                epicsMap.put(id, epic);
+                fullMap.put(id, epic);
                 break;
         }
         return id;

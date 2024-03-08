@@ -6,8 +6,8 @@ public class TaskData {
     private final List<Task> tasks;
     private final List<SubTask> subTasks;
     private final List<Epic> epics;
-    final List<Task> history;
-    int seq = 0;
+    private final List<Task> history;
+    private int seq = 0;
 
     public TaskData(List<Task> tasks, List<SubTask> subTasks, List<Epic> epics, List<Task> history) {
         this.tasks = tasks;

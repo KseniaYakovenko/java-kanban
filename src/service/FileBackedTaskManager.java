@@ -4,12 +4,13 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskData;
+import repository.CsvFileNameProvider;
 import repository.CsvTaskRepository;
 import repository.TaskRepository;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private final TaskRepository repository = new CsvTaskRepository();
+    private final TaskRepository repository = new CsvTaskRepository(new CsvFileNameProvider());
 
     public FileBackedTaskManager(HistoryManager historyManager) {
         super(historyManager);
