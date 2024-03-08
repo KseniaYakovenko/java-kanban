@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Epic extends Task {
@@ -15,6 +16,15 @@ public class Epic extends Task {
     public Epic(String name) {
         super(name);
         super.setStatus(TaskStatus.NEW);
+    }
+
+    public Epic(int id) {
+        super(id);
+    }
+
+    public Epic(int id, String name, String description, TaskStatus status) {
+        super(id, name, description, status);
+        this.subTasks = Collections.emptyList();
     }
 
     public List<SubTask> getSubTask() {
@@ -65,6 +75,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public TaskType getType (){
+        return TaskType.EPIC;
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
                 "id=" + this.getId() +
@@ -77,5 +92,11 @@ public class Epic extends Task {
 
     public void setSubtasks(List<SubTask> subTasks) {
         this.subTasks = subTasks;
+    }
+
+    @Override
+    public String toDto() {
+        return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
+                +  this.getDescription()+ "," + null;
     }
 }

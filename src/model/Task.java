@@ -4,7 +4,6 @@ package model;
 import java.util.Objects;
 
 public class Task {
-
     private int id;
     private String name;
     private String description;
@@ -14,7 +13,18 @@ public class Task {
         this.name = name;
     }
 
+    public Task(int id) {
+        this.id = id;
+    }
+
     public Task(String name, String description, TaskStatus status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task(int id, String name, String description, TaskStatus status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
@@ -37,7 +47,7 @@ public class Task {
         this.id = id;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -55,6 +65,10 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     @Override
@@ -79,4 +93,10 @@ public class Task {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String toDto() {
+        return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
+                + this.getDescription() + "," + null;
+    }
+
 }
