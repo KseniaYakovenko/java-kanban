@@ -48,20 +48,17 @@ public class Epic extends Task {
         }
         boolean allSubTaskStatusesIsNEW = true;
         boolean allSubTaskStatusesIsDONE = true;
-
         for (SubTask subTask : subTasks) {
             if (subTask.getStatus() != TaskStatus.NEW) {
                 allSubTaskStatusesIsNEW = false;
             } else if (subTask.getStatus() != TaskStatus.DONE) {
                 allSubTaskStatusesIsDONE = false;
             }
-
             if (!(allSubTaskStatusesIsNEW || allSubTaskStatusesIsDONE)) {
                 super.setStatus(TaskStatus.IN_PROGRESS);
                 return;
             }
         }
-
         if (allSubTaskStatusesIsNEW) {
             super.setStatus(TaskStatus.NEW);
         } else if (allSubTaskStatusesIsDONE) {
