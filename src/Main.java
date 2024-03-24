@@ -1,123 +1,106 @@
-import model.Epic;
-import model.SubTask;
-import model.Task;
-import model.TaskStatus;
+import model.*;
 import service.Managers;
 import service.TaskManager;
+
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager inMemoryTaskManager = Managers.getDefaultsTaskManager();
-        printAllTasks(inMemoryTaskManager);
+        TaskManager fileBackedTaskManager = Managers.getDefaultsTaskManager();
+        printAllTasks(fileBackedTaskManager);
 
-        int firstTaskId = inMemoryTaskManager.createTask(new Task("Новая задача"));
-        Task firstTask = inMemoryTaskManager.getTaskById(firstTaskId);
-        System.out.println("Create task: " + firstTask);
-        firstTask.setDescription("UPDATED MANUAL TASK");
-        inMemoryTaskManager.updateTask(firstTask);
-        System.out.println("TASK AFTER MANUAL UPDATE " + firstTask);
 
-        Task firstTaskFromManager = inMemoryTaskManager.getTaskById(firstTask.getId());
+        int firstTaskId = fileBackedTaskManager.createTask(new Task("Новая задача"));
+
+        Task firstTask = fileBackedTaskManager.getTaskById(firstTaskId);
+
+        Task firstTaskFromManager = fileBackedTaskManager.getTaskById(firstTask.getId());
         System.out.println("Get task by ID: " + firstTaskFromManager);
 
-        printHistory(inMemoryTaskManager);
+        printHistory(fileBackedTaskManager);
 
-        int secondTaskId = inMemoryTaskManager.createTask(new Task("Вторая Новая задача"));
-        Task secondTask = inMemoryTaskManager.getTaskById(secondTaskId);
+        int secondTaskId = fileBackedTaskManager.createTask(new Task("Вторая Новая задача"));
+        Task secondTask = fileBackedTaskManager.getTaskById(secondTaskId);
         secondTask.setName("Вторая Новая задача after set name");
         System.out.println("Create task: " + secondTask);
 
-        int thirdTaskId = inMemoryTaskManager.createTask(new Task("Третья Новая задача", "create with wrong status", TaskStatus.IN_PROGRESS));
-        Task thirdTask = inMemoryTaskManager.getTaskById(thirdTaskId);
+        int thirdTaskId = fileBackedTaskManager.createTask(new Task("Третья Новая задача", "create with wrong status", TaskStatus.IN_PROGRESS));
+        Task thirdTask = fileBackedTaskManager.getTaskById(thirdTaskId);
         System.out.println("Create task: " + thirdTask);
 
-        Task secondTaskFromManager = inMemoryTaskManager.getTaskById(secondTask.getId());
+        System.out.println(thirdTask.toDto());
+
+        Task secondTaskFromManager = fileBackedTaskManager.getTaskById(secondTask.getId());
         System.out.println("Task by ID: " + secondTaskFromManager);
 
-        System.out.println("List of all tasks " + inMemoryTaskManager.getAllTask());
+        System.out.println("List of all tasks " + fileBackedTaskManager.getAllTask());
 
-        printAllTasks(inMemoryTaskManager);
-
-
-        inMemoryTaskManager.deleteTask(firstTaskFromManager.getId());
+        printAllTasks(fileBackedTaskManager);
+//
+//
+     //   fileBackedTaskManager.deleteTask(firstTaskFromManager.getId());
         System.out.println("Delete by ID: " + firstTask);
 
-        System.out.println("List of all tasks after first task delete" + inMemoryTaskManager.getAllTask());
+        System.out.println("List of all tasks after first task delete" + fileBackedTaskManager.getAllTask());
 
 
-        inMemoryTaskManager.deleteTask(secondTaskFromManager.getId());
+     //   fileBackedTaskManager.deleteTask(secondTaskFromManager.getId());
         System.out.println("Delete: " + secondTask);
 
-        System.out.println("List of all tasks after first and second task delete" + inMemoryTaskManager.getAllTask());
+        System.out.println("List of all tasks after first and second task delete" + fileBackedTaskManager.getAllTask());
 
-        int epicId = inMemoryTaskManager.createEpic(new Epic("Новый эпик"));
-        Epic epic = inMemoryTaskManager.getEpicById(epicId);
+        int epicId = fileBackedTaskManager.createEpic(new Epic("Новый эпик"));
+        Epic epic = fileBackedTaskManager.getEpicById(epicId);
         System.out.println("\nCreate epic: " + epic);
+        System.out.println(epic.toDto());
 
-        Epic epicFromManager = inMemoryTaskManager.getEpicById(epic.getId());
+        Epic epicFromManager = fileBackedTaskManager.getEpicById(epic.getId());
 
         System.out.println("Getting epic BY ID 10 times ");
-        getEpicDyIdSomeTimes(inMemoryTaskManager, epic, 10);
+        getEpicDyIdSomeTimes(fileBackedTaskManager, epic, 10);
 
-        printHistory(inMemoryTaskManager);
+        printHistory(fileBackedTaskManager);
 
-        int firstSubTaskId = inMemoryTaskManager.createSubTask(new SubTask("Новая подзадача 1", epic));
-        SubTask firstSubTask = inMemoryTaskManager.getSubTaskById(firstSubTaskId);
+        int firstSubTaskId = fileBackedTaskManager.createSubTask(new SubTask("Новая подзадача 1", epic));
+        SubTask firstSubTask = fileBackedTaskManager.getSubTaskById(firstSubTaskId);
         System.out.println("\nCreate subtask: " + firstSubTask);
 
-        SubTask firstSubTaskFromManager = inMemoryTaskManager.getSubTaskById(firstSubTask.getId());
+        SubTask firstSubTaskFromManager = fileBackedTaskManager.getSubTaskById(firstSubTask.getId());
         firstSubTaskFromManager.setStatus(TaskStatus.DONE);
         System.out.println("Set status DONE for first subTask");
         System.out.println("Get firstSubTask: " + firstSubTaskFromManager);
         firstSubTaskFromManager.setDescription("updated from updateSubTusk");
-        inMemoryTaskManager.updateSubTask(firstSubTaskFromManager);
+        fileBackedTaskManager.updateSubTask(firstSubTaskFromManager);
         System.out.println("Get firstSubTask after updating: " + firstSubTaskFromManager);
 
-        int secondSubTaskId = inMemoryTaskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
-        SubTask secondSubTask = inMemoryTaskManager.getSubTaskById(secondSubTaskId);
+        int secondSubTaskId = fileBackedTaskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
+        SubTask secondSubTask = fileBackedTaskManager.getSubTaskById(secondSubTaskId);
         System.out.println("\nCreate subtask: " + secondSubTask);
-        System.out.println("All subTasks: " + inMemoryTaskManager.getAllSubTask());
+        System.out.println("All subTasks: " + fileBackedTaskManager.getAllSubTask());
 
+        System.out.println(secondSubTask.toDto());
 
-        Epic epicById = inMemoryTaskManager.getEpicById(epicFromManager.getId());
+        Epic epicById = fileBackedTaskManager.getEpicById(epicFromManager.getId());
         epicById.setDescription("No subtasks");
-        inMemoryTaskManager.updateEpic(epicById);
+        fileBackedTaskManager.updateEpic(epicById);
 
         Epic newEpic = new Epic("epicName", "epicDesc_without_subTasks");
-        inMemoryTaskManager.createEpic(newEpic);
+        fileBackedTaskManager.createEpic(newEpic);
 
-        System.out.println("All tasks: " + inMemoryTaskManager.getAllTask());
-        System.out.println("All subTasks: " + inMemoryTaskManager.getAllSubTask());
-        System.out.println("All epics: " + inMemoryTaskManager.getAllEpic());
+        printAllTasks(fileBackedTaskManager);
 
-        System.out.println("===================");
-        printAllTasks(inMemoryTaskManager);
-        System.out.println("===================");
-
-        inMemoryTaskManager.deleteAllEPic();
-        inMemoryTaskManager.deleteEpic(4);
-        inMemoryTaskManager.deleteEpic(7);
-        inMemoryTaskManager.deleteAllSubTask();
-        inMemoryTaskManager.deleteAllTask();
-        System.out.println("\nAll tasks after removing all: " + inMemoryTaskManager.getAllTask());
-        System.out.println("All subTasks after removing all: " + inMemoryTaskManager.getAllSubTask());
-        System.out.println("All epics after removing all: " + inMemoryTaskManager.getAllEpic());
-
-
-        printAllTasks(inMemoryTaskManager);
-
-        int firstTaskId1 = inMemoryTaskManager.createTask(new Task("Новая задача"));
-        Task firstTask1 = inMemoryTaskManager.getTaskById(firstTaskId1);
+        int firstTaskId1 = fileBackedTaskManager.createTask(new Task("LAST_NEW_TASK"));
+        Task firstTask1 = fileBackedTaskManager.getTaskById(firstTaskId1);
         System.out.println("Create task: " + firstTask1);
         firstTask.setDescription("UPDATED MANUAL TASK");
-        inMemoryTaskManager.updateTask(firstTask1);
+        fileBackedTaskManager.updateTask(firstTask1);
         System.out.println("TASK AFTER MANUAL UPDATE " + firstTask);
 
-        Task firstTaskFromManager1 = inMemoryTaskManager.getTaskById(firstTask1.getId());
+        Task firstTaskFromManager1 = fileBackedTaskManager.getTaskById(firstTask1.getId());
         System.out.println("Get task by ID: " + firstTaskFromManager1);
 
-        printHistory(inMemoryTaskManager);
+        printHistory(fileBackedTaskManager);
+
 
     }
 
