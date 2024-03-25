@@ -31,21 +31,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void init() {
         TaskData taskData = repository.load();
-        for (Task task : taskData.getTasks()) {
+        taskData.getTasks().forEach(task -> {
             tasks.put(task.getId(), task);
-        }
-        for (SubTask subTask : taskData.getSubTasks()) {
+            prioritizedTask.add(task);
+        });
+        taskData.getSubTasks().forEach(subTask -> {
             subTasks.put(subTask.getId(), subTask);
-        }
-        for (Epic epic : taskData.getEpics()) {
+            prioritizedTask.add(subTask);
+        });
+        taskData.getEpics().forEach(epic -> {
             epics.put(epic.getId(), epic);
-        }
-
+            prioritizedTask.add(epic);
+        });
         seq = taskData.getSeq();
-
-        for (Task task : taskData.getHistory()) {
-            historyManager.add(task);
-        }
+        taskData.getHistory().forEach(task -> historyManager.add(task));
     }
 
     @Override

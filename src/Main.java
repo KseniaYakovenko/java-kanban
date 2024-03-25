@@ -1,7 +1,12 @@
-import model.*;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import model.TaskStatus;
 import service.Managers;
 import service.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -9,17 +14,11 @@ public class Main {
         TaskManager fileBackedTaskManager = Managers.getDefaultsTaskManager();
         printAllTasks(fileBackedTaskManager);
 
-
-        int firstTaskId = fileBackedTaskManager.createTask(new Task("Новая задача"));
-
-        Task firstTask = fileBackedTaskManager.getTaskById(firstTaskId);
-
-        Task firstTaskFromManager = fileBackedTaskManager.getTaskById(firstTask.getId());
-        System.out.println("Get task by ID: " + firstTaskFromManager);
-
         printHistory(fileBackedTaskManager);
 
-        int secondTaskId = fileBackedTaskManager.createTask(new Task("Вторая Новая задача"));
+        int secondTaskId = fileBackedTaskManager.createTask(
+                new Task("Вторая Новая задача", LocalDateTime.now().plusMinutes(15), Duration.ofMinutes(1))
+        );
         Task secondTask = fileBackedTaskManager.getTaskById(secondTaskId);
         secondTask.setName("Вторая Новая задача after set name");
         System.out.println("Create task: " + secondTask);
@@ -36,15 +35,10 @@ public class Main {
         System.out.println("List of all tasks " + fileBackedTaskManager.getAllTask());
 
         printAllTasks(fileBackedTaskManager);
-//
-//
-     //   fileBackedTaskManager.deleteTask(firstTaskFromManager.getId());
-        System.out.println("Delete by ID: " + firstTask);
 
         System.out.println("List of all tasks after first task delete" + fileBackedTaskManager.getAllTask());
 
 
-     //   fileBackedTaskManager.deleteTask(secondTaskFromManager.getId());
         System.out.println("Delete: " + secondTask);
 
         System.out.println("List of all tasks after first and second task delete" + fileBackedTaskManager.getAllTask());
@@ -73,7 +67,9 @@ public class Main {
         fileBackedTaskManager.updateSubTask(firstSubTaskFromManager);
         System.out.println("Get firstSubTask after updating: " + firstSubTaskFromManager);
 
-        int secondSubTaskId = fileBackedTaskManager.createSubTask(new SubTask("Новая подзадача 2", epic));
+        int secondSubTaskId = fileBackedTaskManager.createSubTask(
+                new SubTask("Новая подзадача 2", epic, LocalDateTime.now().plusMinutes(4), Duration.ofMinutes(1))
+        );
         SubTask secondSubTask = fileBackedTaskManager.getSubTaskById(secondSubTaskId);
         System.out.println("\nCreate subtask: " + secondSubTask);
         System.out.println("All subTasks: " + fileBackedTaskManager.getAllSubTask());
@@ -84,23 +80,27 @@ public class Main {
         epicById.setDescription("No subtasks");
         fileBackedTaskManager.updateEpic(epicById);
 
-        Epic newEpic = new Epic("epicName", "epicDesc_without_subTasks");
-        fileBackedTaskManager.createEpic(newEpic);
-
         printAllTasks(fileBackedTaskManager);
 
-        int firstTaskId1 = fileBackedTaskManager.createTask(new Task("LAST_NEW_TASK"));
+        int firstTaskId1 = fileBackedTaskManager.createTask(
+                new Task("LAST_NEW_TASK", LocalDateTime.now().plusMinutes(20), Duration.ofMinutes(1))
+        );
         Task firstTask1 = fileBackedTaskManager.getTaskById(firstTaskId1);
         System.out.println("Create task: " + firstTask1);
-        firstTask.setDescription("UPDATED MANUAL TASK");
-        fileBackedTaskManager.updateTask(firstTask1);
-        System.out.println("TASK AFTER MANUAL UPDATE " + firstTask);
 
+        fileBackedTaskManager.updateTask(firstTask1);
         Task firstTaskFromManager1 = fileBackedTaskManager.getTaskById(firstTask1.getId());
         System.out.println("Get task by ID: " + firstTaskFromManager1);
 
         printHistory(fileBackedTaskManager);
 
+        System.out.println("Список задач в порядке приоритета");
+        fileBackedTaskManager.getPrioritizedTasks().forEach(
+                task ->
+                        System.out.println(
+                                task.getType() + " " + task.getStartTime() + " - [" + task.getDuration().toMinutes() +
+                                        "] - " + task.getEndTime())
+        );
 
     }
 

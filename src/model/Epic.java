@@ -1,8 +1,8 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class Epic extends Task {
 
@@ -10,7 +10,8 @@ public class Epic extends Task {
 
     public Epic(String name, String description) {
         super(name, description);
-        super.setStatus(TaskStatus.NEW);
+        super.setStartTime(LocalDateTime.now());
+        super.setDuration(Duration.ofMinutes(0));
     }
 
     public Epic(String name) {
@@ -22,8 +23,8 @@ public class Epic extends Task {
         super(id);
     }
 
-    public Epic(int id, String name, String description, TaskStatus status) {
-        super(id, name, description, status);
+    public Epic(int id, String name, String description, TaskStatus status, LocalDateTime startTime, Duration duration) {
+        super(id, name, description, status, startTime, duration);
         this.subTasks = Collections.emptyList();
     }
 
@@ -41,6 +42,29 @@ public class Epic extends Task {
         calculateStatus();
     }
 
+    @Override
+    public Duration getDuration() {
+        return subTasks.stream().map(subTask -> subTask.getDuration()).reduce(Duration.ZERO, Duration::plus);
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        if (subTasks.isEmpty()) {
+            return super.getStartTime();
+        }
+        Optional minDate = subTasks.stream().min(Comparator.comparing(SubTask::getStartTime)).map(Task::getStartTime);
+        return (LocalDateTime) minDate.get();
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if (subTasks.isEmpty()) {
+            return super.getStartTime();
+        }
+        Optional minDate = subTasks.stream().max(Comparator.comparing(SubTask::getStartTime)).map(Task::getStartTime);
+        return (LocalDateTime) minDate.get();
+    }
+
     public void calculateStatus() {
         if (subTasks.isEmpty()) {
             super.setStatus(TaskStatus.NEW);
@@ -51,7 +75,8 @@ public class Epic extends Task {
         for (SubTask subTask : subTasks) {
             if (subTask.getStatus() != TaskStatus.NEW) {
                 allSubTaskStatusesIsNEW = false;
-            } else if (subTask.getStatus() != TaskStatus.DONE) {
+            }
+            if (subTask.getStatus() != TaskStatus.DONE) {
                 allSubTaskStatusesIsDONE = false;
             }
             if (!(allSubTaskStatusesIsNEW || allSubTaskStatusesIsDONE)) {
@@ -84,6 +109,8 @@ public class Epic extends Task {
                 ", status='" + this.getStatus() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", subTasks='" + this.getSubTask() + '\'' +
+                ", startTime='" + this.getStartTime().toString() + '\'' +
+                ", duration='" + this.getDuration().toMinutes() + '\'' +
                 '}';
     }
 
@@ -94,6 +121,6 @@ public class Epic extends Task {
     @Override
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
-                + this.getDescription() + "," + null;
+                + this.getDescription() + "," + null + "," + this.getStartTime() + "," + this.getDuration();
     }
 }

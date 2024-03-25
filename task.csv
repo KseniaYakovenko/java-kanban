@@ -1,49 +1,13 @@
-id,type,name,status,description,epic
-32,TASK,LAST_NEW_TASK,NEW,null,null
-1,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-33,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-2,TASK,Вторая Новая задача after set name,NEW,null,null
-34,TASK,Вторая Новая задача after set name,NEW,null,null
-3,TASK,Третья Новая задача,NEW,create with wrong status,null
-35,TASK,Третья Новая задача,NEW,create with wrong status,null
-8,TASK,LAST_NEW_TASK,NEW,null,null
-40,TASK,LAST_NEW_TASK,NEW,null,null
-9,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-41,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-10,TASK,Вторая Новая задача after set name,NEW,null,null
-42,TASK,Вторая Новая задача after set name,NEW,null,null
-11,TASK,Третья Новая задача,NEW,create with wrong status,null
-43,TASK,Третья Новая задача,NEW,create with wrong status,null
-16,TASK,LAST_NEW_TASK,NEW,null,null
-48,TASK,LAST_NEW_TASK,NEW,null,null
-17,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-18,TASK,Вторая Новая задача after set name,NEW,null,null
-19,TASK,Третья Новая задача,NEW,create with wrong status,null
-24,TASK,LAST_NEW_TASK,NEW,null,null
-25,TASK,Новая задача,NEW,UPDATED MANUAL TASK,null
-26,TASK,Вторая Новая задача after set name,NEW,null,null
-27,TASK,Третья Новая задача,NEW,create with wrong status,null
-4,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-20,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-36,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-7,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-23,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-39,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-12,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-28,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-44,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null
-15,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-31,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-47,EPIC,epicName,NEW,epicDesc_without_subTasks,null
-5,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,4
-21,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,20
-37,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,36
-6,SUBTASK,Новая подзадача 2,NEW,null,4
-22,SUBTASK,Новая подзадача 2,NEW,null,20
-38,SUBTASK,Новая подзадача 2,NEW,null,36
-13,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,12
-29,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,28
-45,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,44
-14,SUBTASK,Новая подзадача 2,NEW,null,12
-30,SUBTASK,Новая подзадача 2,NEW,null,28
-46,SUBTASK,Новая подзадача 2,NEW,null,44
+id,type,name,status,description,epic,startTime,duration
+1,TASK,Вторая Новая задача after set name,NEW,null,null,2024-03-25T15:05:43.155249,PT1M
+2,TASK,Третья Новая задача,NEW,create with wrong status,null,2024-03-25T14:50:43.191808,PT0S
+6,TASK,LAST_NEW_TASK,NEW,null,null,2024-03-25T15:10:43.221669,PT1M
+7,TASK,Вторая Новая задача after set name,NEW,null,null,2024-03-25T15:54:43.146265,PT1M
+8,TASK,Третья Новая задача,NEW,create with wrong status,null,2024-03-25T15:39:43.147622,PT0S
+12,TASK,LAST_NEW_TASK,NEW,null,null,2024-03-25T15:59:43.159824,PT1M
+3,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null,2024-03-25T14:50:43.208011,PT1M
+9,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null,2024-03-25T15:39:43.156030,PT1M
+4,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,3,2024-03-25T14:50:43.208011,PT0S
+5,SUBTASK,Новая подзадача 2,NEW,null,3,2024-03-25T14:54:43.219622,PT1M
+10,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,9,2024-03-25T15:39:43.156030,PT0S
+11,SUBTASK,Новая подзадача 2,NEW,null,9,2024-03-25T15:43:43.157412,PT1M

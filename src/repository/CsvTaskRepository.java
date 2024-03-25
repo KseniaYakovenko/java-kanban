@@ -4,6 +4,8 @@ import exception.ManagerSaveException;
 import model.*;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 import static java.lang.Integer.parseInt;
 
 public class CsvTaskRepository implements TaskRepository {
-    private static final String HEADER_CSV = "id,type,name,status,description,epic";
+    private static final String HEADER_CSV = "id,type,name,status,description,epic,startTime,duration";
     private final FileNameProvider provider;
 
     public CsvTaskRepository(FileNameProvider provider) {
@@ -39,7 +41,6 @@ public class CsvTaskRepository implements TaskRepository {
                     maxId = id;
                 }
             }
-            System.out.println("MAX ID" + maxId);
             taskData.setSeq(maxId);
         } catch (IOException e) {
             throw new RuntimeException("Ошибка в файле: " + new File(provider.getTaskFileName()).getAbsolutePath(), e);
@@ -110,6 +111,7 @@ public class CsvTaskRepository implements TaskRepository {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(provider.getTaskFileName()))) {
             writer.append(HEADER_CSV);
             writer.newLine();
+
             for (Task task : taskData.getTasks()) {
                 writer.append(task.toDto());
                 writer.newLine();
@@ -137,16 +139,19 @@ public class CsvTaskRepository implements TaskRepository {
         String name = columns[2];
         TaskStatus status = TaskStatus.valueOf(columns[3]);
         String description = columns[4];
+        LocalDateTime startTime = LocalDateTime.parse(columns[6]);
+        Duration duration = Duration.parse(columns[7]);
+
 
         switch (type) {
             case TASK:
-                Task task = new Task(id, name, description, status);
+                Task task = new Task(id, name, description, status, startTime, duration);
                 taskData.getTasks().add(task);
                 fullMap.put(id, task);
                 break;
 
             case SUBTASK:
-                SubTask subTask = new SubTask(id, name, description, status);
+                SubTask subTask = new SubTask(id, name, description, status, startTime, duration);
                 Integer epicId = parseInt(columns[5]);
                 subTask.setEpic(new Epic(epicId));
                 taskData.getSubTasks().add(subTask);
@@ -158,7 +163,7 @@ public class CsvTaskRepository implements TaskRepository {
                 break;
 
             case EPIC:
-                Epic epic = new Epic(id, name, description, status);
+                Epic epic = new Epic(id, name, description, status, startTime, duration);
                 taskData.getEpics().add(epic);
                 epicsMap.put(id, epic);
                 fullMap.put(id, epic);
