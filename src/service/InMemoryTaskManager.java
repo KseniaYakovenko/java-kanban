@@ -1,13 +1,12 @@
 package service;
 
+import exception.ValidationException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -15,6 +14,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     protected final HistoryManager historyManager;
     protected int seq = 0;
+
+    protected TreeSet<Task> prioritizedTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -25,19 +26,41 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        return new TreeSet<>(prioritizedTask);
+    }
+
+    @Override
     public int createTask(Task task) {
+        checkIntersections(task);
         task.setId(generateId());
         task.setStatus(TaskStatus.NEW);
         tasks.put(task.getId(), task);
+        prioritizedTask.add(task);
         return task.getId();
+    }
+
+    private Boolean checkIntersections(Task newTask) {
+        for (Task task : prioritizedTask) {
+            if (task.checkIntersection(newTask)) {
+                throw new ValidationException(
+                        "Пересечение задач по времени выполнения: \n"
+                                + task.getType() + " " + task.getId() + " " + task.getStartTime() + " - " + task.getEndTime() + "\n"
+                                + newTask.getType() + " " + newTask.getId() + " " + newTask.getStartTime() + " - " + newTask.getEndTime()
+                );
+            }
+        }
+        return false;
     }
 
     @Override
     public int createSubTask(SubTask subTask) {
+        checkIntersections(subTask);
         subTask.setId(generateId());
         subTask.setStatus(TaskStatus.NEW);
         subTasks.put(subTask.getId(), subTask);
         subTask.getEpic().addSubTask(subTask);
+        prioritizedTask.add(subTask);
         return subTask.getId();
     }
 
@@ -86,17 +109,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        checkIntersections(task);
+        Task oldTask = tasks.get(task.getId());
+        prioritizedTask.remove(oldTask);
+        prioritizedTask.add(task);
         tasks.put(task.getId(), task);
     }
 
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
+        Task task = tasks.get(id);
+        prioritizedTask.remove(task);
         historyManager.removeFromHistory(id);
     }
 
     @Override
     public void deleteAllTask() {
+        tasks.values().forEach(task -> prioritizedTask.remove(task));
         tasks.clear();
         historyManager.removeAll();
     }
@@ -135,6 +165,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTask(int id) {
         SubTask removeSubTask = subTasks.get(id);
+        prioritizedTask.remove(removeSubTask);
         deleteSubTaskFromEpic(removeSubTask);
         historyManager.removeFromHistory(id);
         subTasks.remove(id);
@@ -142,6 +173,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubTaskFromEpic(SubTask subTask) {
+        prioritizedTask.remove(subTask);
         subTask.getEpic().removeSubTask(subTask);
         historyManager.removeFromHistory(subTask.getId());
     }
@@ -167,6 +199,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubTask(SubTask subTask) {
         if (epics.containsKey(subTask.getEpic().getId())) {
+            checkIntersections(subTask);
+            SubTask oldSubTask = subTasks.get(subTask.getId());
+            prioritizedTask.remove(oldSubTask);
+            prioritizedTask.add(subTask);
             subTasks.put(subTask.getId(), subTask);
             subTask.getEpic().calculateStatus();
         }
