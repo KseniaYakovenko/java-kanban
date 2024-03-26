@@ -72,7 +72,6 @@ class EpicTest {
         subTask2.setStatus(TaskStatus.DONE);
         TaskStatus expected = TaskStatus.IN_PROGRESS;
         TaskStatus actual = epic.getStatus();
-        System.out.println(epic);
         assertEquals(expected, actual, "Статус эпика должен быть IN_PROGRESS");
     }
 
@@ -81,13 +80,10 @@ class EpicTest {
         Epic epic = new Epic("EpicName");
         SubTask subTask1 = new SubTask("first", epic);
         SubTask subTask2 = new SubTask("second", epic);
-        System.out.println(epic);
         epic.addSubTask(subTask1);
         epic.addSubTask(subTask2);
-        System.out.println(epic);
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
         subTask2.setStatus(TaskStatus.IN_PROGRESS);
-        System.out.println(epic);
         TaskStatus expected = TaskStatus.IN_PROGRESS;
         TaskStatus actual = epic.getStatus();
         assertEquals(expected, actual, "Статус эпика должен быть IN_PROGRESS");

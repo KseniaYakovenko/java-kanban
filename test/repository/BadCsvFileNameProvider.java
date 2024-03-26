@@ -1,7 +1,7 @@
 
 package repository;
 
-public class BadCsvFileNameProviderTest implements FileNameProvider {
+public class BadCsvFileNameProvider implements FileNameProvider {
 
     public String getTaskFileName() {
         return "taskTestBad.csv";

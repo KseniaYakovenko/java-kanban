@@ -3,9 +3,9 @@ package service;
 import model.Task;
 import model.TaskData;
 import org.junit.jupiter.api.Test;
-import repository.BadCsvFileNameProviderTest;
-import repository.CsvFileNameProviderTest;
+import repository.BadCsvFileNameProvider;
 import repository.CsvTaskRepository;
+import repository.CsvTestFileNameProvider;
 import repository.TaskRepository;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
 
-    private final TaskRepository repository = new CsvTaskRepository(new CsvFileNameProviderTest());
+    private final TaskRepository repository = new CsvTaskRepository(new CsvTestFileNameProvider());
 
     @Test
     public void createTaskAndSaveCSVTest() {
@@ -28,8 +28,6 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
         repository.save(taskData);
         TaskData taskDataLoad = repository.load();
         Task loadTask = taskDataLoad.getTasks().get(0);
-        System.out.println(task);
-        System.out.println(loadTask);
         assertEquals(task, loadTask, "Записи в файле должны совпадать");
     }
 
@@ -51,7 +49,7 @@ class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
 
     @Test
     public void testException() {
-        TaskRepository badRepository = new CsvTaskRepository(new BadCsvFileNameProviderTest());
+        TaskRepository badRepository = new CsvTaskRepository(new BadCsvFileNameProvider());
         assertThrows(RuntimeException.class, () -> {
             badRepository.load();
         }, "Отсутствие файла должно приводить к исключению");

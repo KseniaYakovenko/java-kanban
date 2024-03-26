@@ -2,7 +2,10 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class Epic extends Task {
 
@@ -52,8 +55,10 @@ public class Epic extends Task {
         if (subTasks.isEmpty()) {
             return super.getStartTime();
         }
-        Optional minDate = subTasks.stream().min(Comparator.comparing(SubTask::getStartTime)).map(Task::getStartTime);
-        return (LocalDateTime) minDate.get();
+        return subTasks.stream()
+                .min(Comparator.comparing(SubTask::getStartTime))
+                .map(Task::getStartTime)
+                .orElseGet(() -> super.getStartTime());
     }
 
     @Override
@@ -61,8 +66,10 @@ public class Epic extends Task {
         if (subTasks.isEmpty()) {
             return super.getStartTime();
         }
-        Optional minDate = subTasks.stream().max(Comparator.comparing(SubTask::getStartTime)).map(Task::getStartTime);
-        return (LocalDateTime) minDate.get();
+        return subTasks.stream()
+                .max(Comparator.comparing(SubTask::getEndTime))
+                .map(Task::getEndTime)
+                .orElseGet(() -> super.getEndTime());
     }
 
     public void calculateStatus() {
