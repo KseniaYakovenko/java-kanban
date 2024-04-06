@@ -5,6 +5,7 @@ import model.SubTask;
 import model.Task;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     int createTask(Task task);
@@ -24,6 +25,8 @@ public interface TaskManager {
     List<SubTask> getAllSubTask();
 
     SubTask getSubTaskById(int id);
+
+    TreeSet<Task> getPrioritizedTasks();
 
     void updateTask(Task task);
 
