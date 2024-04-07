@@ -1,6 +1,7 @@
 package service;
 
-import exception.ValidationException;
+import exception.IntersectionByTime;
+import exception.NotFoundException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -43,7 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Boolean checkIntersections(Task newTask) {
         for (Task task : prioritizedTask) {
             if (task.checkIntersection(newTask)) {
-                throw new ValidationException(
+                throw new IntersectionByTime(
                         "Пересечение задач по времени выполнения: \n"
                                 + task.getType() + " " + task.getId() + " " + task.getStartTime() + " - " + task.getEndTime() + "\n"
                                 + newTask.getType() + " " + newTask.getId() + " " + newTask.getStartTime() + " - " + newTask.getEndTime()
@@ -77,8 +78,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(int id) {
+    public Task getTaskById(int id) throws NotFoundException {
         Task task = tasks.get(id);
+        if (task == null) throw new NotFoundException("Не найдена задачас с id=" + id);
         historyManager.add(task);
         return task;
     }
@@ -118,8 +120,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id) {
-        tasks.remove(id);
         Task task = tasks.get(id);
+        if (task == null) throw new NotFoundException("Не найдена задачас с id=" + id);
+        tasks.remove(id);
         prioritizedTask.remove(task);
         historyManager.removeFromHistory(id);
     }
@@ -198,14 +201,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        if (epics.containsKey(subTask.getEpic().getId())) {
             checkIntersections(subTask);
             SubTask oldSubTask = subTasks.get(subTask.getId());
             prioritizedTask.remove(oldSubTask);
+        subTask.setEpic(oldSubTask.getEpic());
             prioritizedTask.add(subTask);
             subTasks.put(subTask.getId(), subTask);
             subTask.getEpic().calculateStatus();
-        }
     }
 
     @Override
