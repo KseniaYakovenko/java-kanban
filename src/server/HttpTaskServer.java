@@ -18,6 +18,7 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     private HttpServer server;
     private final TaskManager manager;
+
     public HttpTaskServer(TaskManager manager) {
         this.manager = manager;
     }
