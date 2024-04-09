@@ -19,7 +19,7 @@ public class PrioritizedPathHandler extends BasePathHandler implements HttpHandl
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         try {
-            String response = getGson().toJson(manager.getPrioritizedTasks().stream().map(Task::mapperToHistoryListDto).toList());
+            String response = gson.toJson(manager.getPrioritizedTasks().stream().map(Task::mapperToTaskDto).toList());
             sendText(httpExchange, 200, response);
 
         } catch (IntersectionByTime e) {

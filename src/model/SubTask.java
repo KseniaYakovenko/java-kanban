@@ -64,6 +64,7 @@ public class SubTask extends Task {
     public SubTaskDto mapperToDto() {
         return new SubTaskDto(
                 this.getId(),
+                this.getType(),
                 this.getName(),
                 this.getDescription(),
                 this.getStatus(),

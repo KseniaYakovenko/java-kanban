@@ -136,6 +136,7 @@ public class Epic extends Task {
     public EpicDto mapperToDto() {
         return new EpicDto(
                 this.getId(),
+                this.getType(),
                 this.getName(),
                 this.getDescription(),
                 this.getStatus(),

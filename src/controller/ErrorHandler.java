@@ -1,7 +1,9 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
+import exception.BadRequestException;
 import exception.IntersectionByTime;
 import exception.ManagerSaveException;
 import exception.NotFoundException;
@@ -27,9 +29,19 @@ public class ErrorHandler {
         sendText(h, 500, gson.toJson(e.getMessage()));
     }
 
+    public void handle(HttpExchange h, BadRequestException e) throws IOException {
+        e.printStackTrace();
+        sendText(h, 400, gson.toJson(e.getMessage()));
+    }
+
     public void handle(HttpExchange h, NumberFormatException e) throws IOException {
         e.printStackTrace();
         sendText(h, 404, gson.toJson(e.getMessage()));
+    }
+
+    public void handle(HttpExchange h, JsonSyntaxException e) throws IOException {
+        e.printStackTrace();
+        sendText(h, 400, gson.toJson("Ошибка в сиснтаксисе json: " + e.getMessage()));
     }
 
     public void handle(HttpExchange h, NotFoundException e) throws IOException {

@@ -1,7 +1,6 @@
 package model;
 
-
-import model.dto.TaskHistoryListDto;
+import model.dto.TaskDto;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -164,13 +163,16 @@ public class Task {
                 + this.getDescription() + "," + null + "," + this.getStartTime() + "," + this.getDuration();
     }
 
-    public TaskHistoryListDto mapperToHistoryListDto() {
-        return new TaskHistoryListDto(
+    public TaskDto mapperToTaskDto() {
+        return new TaskDto(
                 this.getId(),
+                this.getType(),
                 this.getName(),
                 this.getDescription(),
                 this.getStatus(),
-                this.getStartTime()
+                this.getStartTime(),
+                this.getDuration(),
+                this.getEndTime()
         );
     }
 }

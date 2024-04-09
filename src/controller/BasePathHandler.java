@@ -1,21 +1,20 @@
 package controller;
 
-import adapter.DurationAdapter;
-import adapter.LocalDateAdapter;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import exception.BadRequestException;
 import service.TaskManager;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
+
+import static server.HttpTaskServer.getGson;
 
 public class BasePathHandler {
-    ErrorHandler errorHandler = new ErrorHandler();
-    TaskManager manager;
+    protected final ErrorHandler errorHandler = new ErrorHandler();
+    protected final TaskManager manager;
+    static Gson gson = getGson();
 
     public BasePathHandler(TaskManager manager) {
         this.manager = manager;
@@ -26,6 +25,10 @@ public class BasePathHandler {
         h.getResponseHeaders().add("Context-Type", "application/json");
         h.sendResponseHeaders(code, resp.length);
         h.getResponseBody().write(resp);
+    }
+
+    void sendText(HttpExchange h, int code) throws IOException {
+        h.sendResponseHeaders(code, -1);
     }
 
     public Endpoint getEndpoint(String requestPath, String requestMethod) {
@@ -59,15 +62,10 @@ public class BasePathHandler {
         return Integer.parseInt(pathParts[2]);
     }
 
-    public String parseBody(HttpExchange httpExchange) throws IOException {
+    public String parseBody(HttpExchange httpExchange) throws BadRequestException, IOException {
         InputStream bodyInputStream = httpExchange.getRequestBody();
-        return new String(bodyInputStream.readAllBytes(), StandardCharsets.UTF_8);
-    }
-
-    public static Gson getGson() {
-        return new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .create();
+        byte[] inputStreamBytes = bodyInputStream.readAllBytes();
+        if (inputStreamBytes.length == 0) throw new BadRequestException("Пустое тело запроса");
+        return new String(inputStreamBytes, StandardCharsets.UTF_8);
     }
 }

@@ -1,7 +1,9 @@
 package controller;
 
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import exception.BadRequestException;
 import exception.IntersectionByTime;
 import exception.ManagerSaveException;
 import exception.NotFoundException;
@@ -31,13 +33,13 @@ public class EpicPathHandler extends BasePathHandler implements HttpHandler {
                 case GET_ALL: {
                     List<Epic> epicsList = manager.getAllEpic();
                     List<EpicDto> dtoList = epicsList.stream().map(Epic::mapperToDto).toList();
-                    response = getGson().toJson(dtoList);
+                    response = gson.toJson(dtoList);
                     sendText(httpExchange, 200, response);
                     break;
                 }
                 case GET_BY_ID: {
                     int id = getId(requestPath);
-                    response = getGson().toJson(manager.getEpicById(id).mapperToDto());
+                    response = gson.toJson(manager.getEpicById(id).mapperToDto());
                     sendText(httpExchange, 200, response);
                     break;
                 }
@@ -45,28 +47,28 @@ public class EpicPathHandler extends BasePathHandler implements HttpHandler {
                     int id = getId(requestPath);
                     List<SubTask> subTaskList = manager.getEpicSubtasks(id);
                     List<SubTaskDto> subTaskDtoList = subTaskList.stream().map(SubTask::mapperToDto).toList();
-                    response = getGson().toJson(subTaskDtoList);
+                    response = gson.toJson(subTaskDtoList);
                     sendText(httpExchange, 200, response);
                     break;
                 }
                 case POST: {
                     String body = parseBody(httpExchange);
-                    Epic epic = getGson().fromJson(body, Epic.class);
+                    Epic epic = gson.fromJson(body, Epic.class);
 
                     if (epic.getId() == null || epic.getId() == 0) {
                         int id = manager.createEpic(epic);
-                        response = getGson().toJson(manager.getEpicById(id).mapperToDto());
+                        response = gson.toJson(manager.getEpicById(id).mapperToDto());
                         sendText(httpExchange, 201, response);
                     } else {
                         manager.updateEpic(epic);
-                        response = getGson().toJson(epic.mapperToDto());
+                        response = gson.toJson(epic.mapperToDto());
                         sendText(httpExchange, 200, response);
                     }
                     break;
                 }
                 case DELETE: {
                     String body = parseBody(httpExchange);
-                    Epic epic = getGson().fromJson(body, Epic.class);
+                    Epic epic = gson.fromJson(body, Epic.class);
                     int id = epic.getId();
                     manager.deleteEpic(id);
                     sendText(httpExchange, 204, "Deleted");
@@ -80,11 +82,15 @@ public class EpicPathHandler extends BasePathHandler implements HttpHandler {
             errorHandler.handle(httpExchange, e);
         } catch (ManagerSaveException e) {
             errorHandler.handle(httpExchange, e);
-        } catch (IOException e) {
-            errorHandler.handle(httpExchange, e);
         } catch (NumberFormatException e) {
             errorHandler.handle(httpExchange, e);
+        } catch (JsonSyntaxException e) {
+            errorHandler.handle(httpExchange, e);
         } catch (NotFoundException e) {
+            errorHandler.handle(httpExchange, e);
+        } catch (BadRequestException e) {
+            errorHandler.handle(httpExchange, e);
+        } catch (IOException e) {
             errorHandler.handle(httpExchange, e);
         } catch (Exception e) {
             errorHandler.handle(httpExchange, e);

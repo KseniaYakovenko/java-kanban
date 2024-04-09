@@ -20,7 +20,7 @@ public class HistoryPathHandler extends BasePathHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
 
         try {
-            String response = getGson().toJson(manager.getHistory().stream().map(Task::mapperToHistoryListDto).toList());
+            String response = gson.toJson(manager.getHistory().stream().map(Task::mapperToTaskDto).toList());
             sendText(httpExchange, 200, response);
 
         } catch (IntersectionByTime e) {

@@ -1,15 +1,12 @@
 package model.dto;
 
-import com.google.gson.annotations.SerializedName;
 import model.TaskStatus;
 import model.TaskType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class EpicDto {
-
+public class TaskDto {
     public int id;
     public TaskType type;
     public String name;
@@ -18,10 +15,8 @@ public class EpicDto {
     public LocalDateTime startTime;
     public Duration duration;
     public LocalDateTime endTime;
-    @SerializedName("subTasks")
-    public List<SubTaskDto> subTasksDto;
 
-    public EpicDto(int id, TaskType type, String name, String description, TaskStatus status, LocalDateTime startTime, Duration duration, LocalDateTime endTime, List<SubTaskDto> subTaskDto) {
+    public TaskDto(int id, TaskType type, String name, String description, TaskStatus status, LocalDateTime startTime, Duration duration, LocalDateTime endTime) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -30,6 +25,5 @@ public class EpicDto {
         this.startTime = startTime;
         this.duration = duration;
         this.endTime = endTime;
-        this.subTasksDto = subTaskDto;
     }
 }
