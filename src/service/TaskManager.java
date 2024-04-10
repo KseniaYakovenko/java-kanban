@@ -3,6 +3,7 @@ package service;
 import model.Epic;
 import model.SubTask;
 import model.Task;
+import model.dto.SubTaskDto;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -53,4 +54,6 @@ public interface TaskManager {
     List<SubTask> getEpicSubtasks(int id);
 
     List<Task> getHistory();
+
+    SubTask dtoToModel(SubTaskDto subTaskDto);
 }

@@ -1,13 +1,15 @@
 id,type,name,status,description,epic,startTime,duration
-1,TASK,Вторая Новая задача after set name,NEW,null,null,2024-03-25T15:05:43.155249,PT1M
-2,TASK,Третья Новая задача,NEW,create with wrong status,null,2024-03-25T14:50:43.191808,PT0S
+1,TASK,TASK 111111111,NEW,null,null,2024-07-25T15:05:43.155249,PT1M
+18,TASK,LAST_NEW_TASK_NEW_222288888NEWUPDATE,NEW,not null but str,null,2024-05-29T20:46:32.494406,PT0S
+19,TASK,CREATED and UPDATED twice,NEW,null,null,2024-01-25T15:05:43.155249,PT1M
 6,TASK,LAST_NEW_TASK,NEW,null,null,2024-03-25T15:10:43.221669,PT1M
 7,TASK,Вторая Новая задача after set name,NEW,null,null,2024-03-25T15:54:43.146265,PT1M
-8,TASK,Третья Новая задача,NEW,create with wrong status,null,2024-03-25T15:39:43.147622,PT0S
-12,TASK,LAST_NEW_TASK,NEW,null,null,2024-03-25T15:59:43.159824,PT1M
-3,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null,2024-03-25T14:50:43.208011,PT1M
+3,EPIC,Новый эпик UPDATE SECOND,IN_PROGRESS,No subtasks,null,2024-03-25T14:54:43.219622,PT1M
 9,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null,2024-03-25T15:39:43.156030,PT1M
-4,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,3,2024-03-25T14:50:43.208011,PT0S
+15,EPIC,Новый эпик,IN_PROGRESS,No subtasks,null,2024-04-06T20:26:32.489576,PT1M
+16,SUBTASK,Новая подзадача 1_UPDATED SUB,DONE,updated from updateSubTusk,15,2024-04-06T20:26:32.489576,PT0S
+17,SUBTASK,Новая подзадача 2,NEW,null,15,2024-04-06T20:30:32.491188,PT1M
+4,SUBTASK,Новая подзадача 1 WWWWWWWWW,DONE,updated from updateSubTusk,3,2024-05-30T14:50:43.208011,PT0S
 5,SUBTASK,Новая подзадача 2,NEW,null,3,2024-03-25T14:54:43.219622,PT1M
 10,SUBTASK,Новая подзадача 1,DONE,updated from updateSubTusk,9,2024-03-25T15:39:43.156030,PT0S
 11,SUBTASK,Новая подзадача 2,NEW,null,9,2024-03-25T15:43:43.157412,PT1M

@@ -1,5 +1,7 @@
 package model;
 
+import model.dto.SubTaskDto;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -57,6 +59,20 @@ public class SubTask extends Task {
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
                 + this.getDescription() + "," + this.epic.getId() + "," + this.getStartTime() + "," + this.getDuration();
+    }
+
+    public SubTaskDto mapperToDto() {
+        return new SubTaskDto(
+                this.getId(),
+                this.getType(),
+                this.getName(),
+                this.getDescription(),
+                this.getStatus(),
+                this.getStartTime(),
+                this.getDuration(),
+                this.getEndTime(),
+                this.getEpic().getId()
+        );
     }
 
     public void setEpic(Epic epic) {

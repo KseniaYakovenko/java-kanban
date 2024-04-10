@@ -1,5 +1,6 @@
 package model;
 
+import model.dto.TaskDto;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -160,5 +161,18 @@ public class Task {
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
                 + this.getDescription() + "," + null + "," + this.getStartTime() + "," + this.getDuration();
+    }
+
+    public TaskDto mapperToTaskDto() {
+        return new TaskDto(
+                this.getId(),
+                this.getType(),
+                this.getName(),
+                this.getDescription(),
+                this.getStatus(),
+                this.getStartTime(),
+                this.getDuration(),
+                this.getEndTime()
+        );
     }
 }

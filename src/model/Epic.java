@@ -1,5 +1,7 @@
 package model;
 
+import model.dto.EpicDto;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class Epic extends Task {
 
     @Override
     public Duration getDuration() {
-        return subTasks.stream().map(subTask -> subTask.getDuration()).reduce(Duration.ZERO, Duration::plus);
+        return subTasks.stream().map(Task::getDuration).reduce(Duration.ZERO, Duration::plus);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class Epic extends Task {
         return subTasks.stream()
                 .min(Comparator.comparing(SubTask::getStartTime))
                 .map(Task::getStartTime)
-                .orElseGet(() -> super.getStartTime());
+                .orElseGet(super::getStartTime);
     }
 
     @Override
@@ -69,7 +71,7 @@ public class Epic extends Task {
         return subTasks.stream()
                 .max(Comparator.comparing(SubTask::getEndTime))
                 .map(Task::getEndTime)
-                .orElseGet(() -> super.getEndTime());
+                .orElseGet(super::getEndTime);
     }
 
     public void calculateStatus() {
@@ -129,5 +131,19 @@ public class Epic extends Task {
     public String toDto() {
         return this.getId() + "," + this.getType().name() + "," + this.getName() + "," + this.getStatus().name() + ","
                 + this.getDescription() + "," + null + "," + this.getStartTime() + "," + this.getDuration();
+    }
+
+    public EpicDto mapperToDto() {
+        return new EpicDto(
+                this.getId(),
+                this.getType(),
+                this.getName(),
+                this.getDescription(),
+                this.getStatus(),
+                this.getStartTime(),
+                this.getDuration(),
+                this.getEndTime(),
+                this.getSubTask().stream().map(SubTask::mapperToDto).toList()
+        );
     }
 }
