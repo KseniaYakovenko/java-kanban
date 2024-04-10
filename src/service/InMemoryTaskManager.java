@@ -160,7 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
             epics.remove(id);
             historyManager.removeFromHistory(id);
         } else {
-            System.out.println("Incorrect id = " + id + " for deleting");
+            throw new NotFoundException("Не найден эпик с id=" + id);
         }
     }
 
@@ -186,6 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTask(int id) {
         SubTask removeSubTask = subTasks.get(id);
+        if (removeSubTask == null) throw new NotFoundException("Не найдена подзадача с id=" + id);
         prioritizedTask.remove(removeSubTask);
         deleteSubTaskFromEpic(removeSubTask);
         historyManager.removeFromHistory(id);
